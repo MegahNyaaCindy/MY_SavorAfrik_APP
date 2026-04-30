@@ -1,0 +1,188 @@
+<!--cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'--> 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script src="config.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--<link rel="stylesheet" href="accuiel.css">--> 
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-fixed bg-cover bg-center bg-no-repeat overflow-y-hiden overflow-x-hiden"
+      style="background-image: url(https://i.pinimg.com/736x/ba/56/c4/ba56c40d433fb47730f5b6955c59e962.jpg);">
+      
+    <!-- Configuration personnalisée -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'savor-vert': '#1a472a',
+                        'savor-orange': '#f4a261',
+                        'savor-creme': '#f4f1ea',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        /* Petits ajustements supplémentaires */
+        .hover-lift:hover {
+            transform: translateY(-5px); transition: transform 0,2s;
+        }
+        @keyframes fadeInUp {
+            from{opacity: 0;transform: translateY(20px);}to{opacity: 1;transform: translateY(0);}
+        }
+        .fadein {
+            animation: fadeInUP 0.6s ease both;
+        }
+    </style>
+</head>
+<body class="bg-savor-creme">
+    
+    <!-- Navigation -->
+    <nav class="bg-savor-vert text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    🍲 SavorAfrik ✨
+                </div>
+                <div class="space-x-6">
+                    <a href="index.html" class="hover:text-savor-orange transition">Accueil</a>
+                    <a href="avis.html" class="hover:text-savor-orange transition">Donner mon avis</a>
+                    <a href="stats.html" class="hover:text-savor-orange transition">statistiques</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="bg-gradient-to-r from-savor-vert to-savor-orange text-white py-20">
+        <div class="container mx-auto px-6 text-center fadein">
+            <h1 class="text-5xl font-bold mb-4">
+                Savoure l'Afrique Centrale
+            </h1>
+            <p class="text-xl mb-8 max-w-2xl mx-auto">
+                Note, partage et découvre les meilleurs plats du Cameroun, Congo, Gabon, RCA, Tchad et Guinée Équatoriale
+            </p>
+                
+                <div class="max-w-xl mx-auto flex gap-3">
+                    <input type="text" 
+                           id="nomPlat"
+                           placeholder="🔍Entrez le nom d'un plat"
+                           class="text-savor-vert gap-3 cursor-text flex-1 px-5 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-orange-afrik transition text-lg"
+                           onkeypress="if(event.key==='Enter')rechercherPlat()">
+                    <button onclick="rechercherPlat()"
+                            class=" text-white bg-savor-vert px-6 py-3 rounded-xl font-semibold hover:bg-opacity-90 transition transform hover:scale-105">
+                        Découvrir
+                    </button>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Cartes des plats -->
+    <section class="py-16">
+        <div class="container  mx-auto px-6">
+            <h2 class="text-3xl font-bold text-center text-savor-vert mb-12">
+                🌟 Plats tendances 🌟
+            </h2>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Carte 1 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition hover-lift cursor-pointer fadein"
+                             onclick="allerVers('eru')" >
+                    <div class="h-48 overflow-hidden bg-gradient-to-r from-savor-vert to-savor-orange flex items-center justify-center">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/e/ef/Le_Eru%2C_un_plat_camerounais.jpg" 
+                             alt="Eru" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">🇨🇲 Cameroun</span>
+                        <h3 class="text-xl font-bold text-savor-vert mb-1 mt-2">eru</h3>
+                        <p class="bg-white text-gray-600 mb-4">Plat national camerounais aux epinard et feuilles d'okok et huile de palme</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                            <span class="text-savor-orange font-semibold">4.9/5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carte 2 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition hover-lift cursor-pointer fadein"
+                             onclick="allerVers('Poulet DG')" style="animation-delay: 0.2s;">
+                    <div class="h-48 overflow-hidden bg-gradient-to-r from-savor-vert to-savor-orange flex items-center justify-center">
+                         <img  src="https://cdn.aistoucuisine.com/assets/3e65b48a-7346-482c-8eaf-2d3ab935b676/poulet-dg.jpg?width=1280" alt="Poulet DG"
+                                class="w-full h-full object-cover hover:scale-105 transition duration-300" >
+                     </div>
+                    <div class="p-6">
+                        <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">🇨🇲 Cameroun</span>
+                        <h3 class="text-xl font-bold text-savor-vert mt-2 mb-1">Poulet DG</h3>
+                        <p class="bg-white text-savor-vert mb-4">Le plat des grandes occasions - poulet frit aux plantains </p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                            <span class="text-savor-orange font-semibold">4.8/5</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Carte 3 -->
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition hover-lift cursor-pointer fadein"
+                             onclick="allerVers('Poulet DG')" style="animation-delay: 0.2s;">
+                    <div class="h-48 bg-gradient-to-r from-savor-vert to-savor-orange flex items-center justify-center">
+                        <img src="https://www.tasteatlas.com/images/dishes/c13c5b6bafb645bca9ca67069b9769cb.jpg?mw=1300" 
+                             alt="Moamba susu" class="w-full h-full object-cover hover:scale-105 transition duration-300">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-semibold bg-green-100 text-green-800 px-2 py-1 rounded-full">🇨🇬 Congo</span>
+                        <h3 class="text-xl font-bold text-savor-vert mb-2">Moamba Nsusu</h3>
+                        <p class="text-gray-600 mb-4">Poulet à la sauce arachide du Congo</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-yellow-500">⭐⭐⭐⭐⭐</span>
+                            <span class="text-savor-orange font-semibold">4.7/5</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="bg-savor-vert text-white py-12">
+        <div class="container mx-auto px-6 text-center">
+            <h2 class="text-2xl font-bold mb-8">🌍 6 pays, une seule passion culinaire</h2>
+            <div class="flex flex-wrap justify-center gap-4">
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇨🇲 Cameroun</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇨🇬 Congo</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇨🇩 RD Congo</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇬🇦 Gabon</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇨🇫 RCA</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇹🇩 Tchad</span>
+                <span class="bg-white/20 px-4 py-2 rounded-full text-sm font-semibold">🇬🇶 Guinée Équatoriale</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Pied de page -->
+    <footer class="bg-savor-vert text-white py-8 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p>🍲 SavorAfrik — Savoure, Note, Partage ✨</p>
+            <p class="text-sm opacity-75 mt-2">Application de collecte et analyse de données culinaires d'Afrique Centrale</p>
+            <p class="text-sm opacity-50 mt-4">TP INF232 - EC2</p>
+        </div>
+    </footer>
+    <script>
+        function rechercherPlat() {
+            const nom = document.getElementById("nomPlat").value.trim();
+            if (nom.length < 2) {
+                alert("Entrez un nom de plat valide (min 2 caractères).");
+                return;
+            }
+            window.location.href = `decouvrir.html?plat=${encodeURIComponent(nom)}`;
+        }
+        function allerVers(nom) {
+            window.location.href = `decouvrir.html?plat=${encodeURIComponent(nom)}`;
+        }
+    </script>
+</body>
+</html>
+<!--HTMLEOF
+echo "index.html mis à jour"
+    

@@ -1,0 +1,272 @@
+<!--cat > /mnt/user-data/outputs/stats.html << 'HTMLEOF'-->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="config.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--<link rel="stylesheet" href="accuiel.css">--> 
+  <title>Savor'Afrik — Donner mon avis</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hover
+    .hover-lift:hover {
+        transform: translateY(-5px); transition: transform 0,2s;
+    }
+    @keyframes fadeInUp {
+        from{opacity: 0;transform: translateY(20px);}to{opacity: 1;transform: translateY(0);}
+    }
+    .fadein {
+        animation: fadeInUP 0.6s ease both;
+    }
+    .bg-savor-vert { background-color: #1a472a; }
+    .savor-vert { color: #1a472a; }
+    .text-savor-orange { color: #f4a261; }
+    .bg-savor-orange { background-color: #f4a261; }
+    .border-savor-orange { border-color: #f4a261; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    .fadein { animation: fadeInUp 0.5s ease both; }
+    .note-btn { font-size: 28px; cursor: pointer; transition: transform 0.15s; color: #d1d5db; }
+    .note-btn:hover { transform: scale(1.2); }
+    .tab-btn { padding: 10px 24px; border-radius: 9999px; font-weight: 600; font-size: 14px; transition: all 0.2s; cursor: pointer; }
+    .tab-active { background: #1a472a; color: white; }
+    .tab-inactive { background: #f3f4f6; color: #6b7280; }
+    .tab-inactive:hover { background: #e5e7eb; }
+  </style>
+</head>
+<body class="bg-savor-creme">
+    
+    <!-- Navigation -->
+    <nav class="bg-savor-vert text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    🍲 SavorAfrik ✨
+                </div>
+                <div class="space-x-6">
+                    <a href="index.html" class="hover:text-savor-orange transition duration-300">Accueil</a>
+                    <a href="avis.html" class=" hover:text-savor-orange transition duration-300">Donner mon avis</a>
+                    <a href="stats.html" class=" hover:text-savor-orange transition duration-300">statistiques</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-savor-vert to-orange-400 text-savor-vert py-14 text-center px-4">
+    <h1 class="text-4xl text-savor-vert font-bold mb-3">✍️ Votre Parole Compte</h1>
+    <p class="text-lg opacity-90 max-w-xl mx-auto">
+      Notez un plat que vous avez goûté ou suggérez des améliorations pour Savor'Afrik.
+    </p>
+  </section>
+
+  <!-- Onglets -->
+  <div class="max-w-2xl mx-auto px-4 mt-8 mb-4 flex gap-3 justify-center">
+    <button class="tab-btn tab-active" id="tabAvis" onclick="changerOnglet('avis')">⭐ Noter un plat</button>
+    <button class="tab-btn tab-inactive" id="tabSuggestion" onclick="changerOnglet('suggestion')">💬 Suggestion / Feedback</button>
+  </div>
+
+  <main class="max-w-2xl mx-auto px-4 pb-16">
+
+    <!-- ===== FORMULAIRE AVIS PLAT ===== -->
+    <div id="formAvis" class="bg-white rounded-2xl shadow-lg p-6 md:p-8 fadein">
+      <h2 class="text-xl font-bold savor-vert mb-1">Notez un plat</h2>
+      <p class="text-gray-500 text-sm mb-6">Partagez votre expérience culinaire avec la communauté Savor'Afrik.</p>
+
+      <div id="avisSucces" class="hidden bg-green-50 border border-green-200 rounded-xl p-4 text-green-700 font-medium mb-4 text-center">
+        🎉 Merci pour votre avis ! La communauté vous remercie.
+      </div>
+      <div id="avisErreur" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 font-medium mb-4 text-center">
+        ⚠️ Une erreur s'est produite. Veuillez réessayer.
+      </div>
+
+      <div class="space-y-5">
+
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1">Nom du plat <span class="text-red-500">*</span></label>
+          <input type="text" id="avisPlatNom" placeholder="Ex: Ndolé, Poulet DG, Eru..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 focus:ring-1 focus:ring-orange-200 transition">
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-2">Votre note <span class="text-red-500">*</span></label>
+          <div class="flex gap-2" id="noteStars">
+            <span class="note-btn" data-n="1" onclick="setNoteAvis(1)">★</span>
+            <span class="note-btn" data-n="2" onclick="setNoteAvis(2)">★</span>
+            <span class="note-btn" data-n="3" onclick="setNoteAvis(3)">★</span>
+            <span class="note-btn" data-n="4" onclick="setNoteAvis(4)">★</span>
+            <span class="note-btn" data-n="5" onclick="setNoteAvis(5)">★</span>
+          </div>
+          <p class="text-xs text-gray-400 mt-1" id="noteLabel">Cliquez pour noter</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-semibold text-gray-700 block mb-1">Pays d'origine</label>
+            <select id="avisPays" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400">
+              <option value="">Sélectionner...</option>
+              <option>Cameroun</option>
+              <option>Congo</option>
+              <option>RD Congo</option>
+              <option>Gabon</option>
+              <option>RCA</option>
+              <option>Tchad</option>
+              <option>Guinée Équatoriale</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-sm font-semibold text-gray-700 block mb-1">Votre prénom</label>
+            <input type="text" id="avisAuteur" placeholder="Anonyme"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1">Commentaire</label>
+          <textarea id="avisCommentaire" rows="4" placeholder="Décrivez le goût, la texture, le souvenir que vous associez à ce plat..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none"></textarea>
+          <p class="text-xs text-gray-400 mt-1">Maximum 500 caractères</p>
+        </div>
+
+        <button onclick="soumettreAvis()"
+          class="w-full bg-savor-vert text-white py-3 rounded-xl font-bold text-base hover:opacity-90 transition">
+          Envoyer mon avis 🚀
+        </button>
+      </div>
+    </div>
+
+    <!-- ===== FORMULAIRE SUGGESTION ===== -->
+    <div id="formSuggestion" class="hidden bg-white rounded-2xl shadow-lg p-6 md:p-8 fadein">
+      <h2 class="text-xl font-bold savor-vert mb-1">Suggestion & Feedback</h2>
+      <p class="text-gray-500 text-sm mb-6">Aidez-nous à améliorer Savor'Afrik ! Vos retours sont précieux.</p>
+
+      <div id="suggSucces" class="hidden bg-green-50 border border-green-200 rounded-xl p-4 text-green-700 font-medium mb-4 text-center">
+        🎉 Merci ! Votre message a bien été envoyé.
+      </div>
+      <div id="suggErreur" class="hidden bg-red-50 border border-red-200 rounded-xl p-4 text-red-700 font-medium mb-4 text-center">
+        ⚠️ Erreur d'envoi. Réessayez dans un instant.
+      </div>
+
+      <div class="space-y-5">
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-semibold text-gray-700 block mb-1">Nom (optionnel)</label>
+            <input type="text" id="suggNom" placeholder="Votre prénom"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400">
+          </div>
+          <div>
+            <label class="text-sm font-semibold text-gray-700 block mb-1">Email (optionnel)</label>
+            <input type="email" id="suggEmail" placeholder="Pour vous répondre"
+              class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1">Sujet <span class="text-red-500">*</span></label>
+          <select id="suggSujet" class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400">
+            <option value="">Choisir un sujet...</option>
+            <option>Ajouter un plat manquant</option>
+            <option>Corriger une recette</option>
+            <option>Bug / Problème technique</option>
+            <option>Amélioration du design</option>
+            <option>Autre suggestion</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1">Message <span class="text-red-500">*</span></label>
+          <textarea id="suggMessage" rows="5" placeholder="Décrivez votre suggestion en détail..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-orange-400 resize-none"></textarea>
+        </div>
+
+        <button onclick="soumettreSuggestion()"
+          class="w-full bg-savor-vert text-white py-3 rounded-xl font-bold text-base hover:opacity-90 transition">
+          Envoyer ma suggestion 💬
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-savor-vert text-white py-6 text-center">
+    <p>🍲 Savor'Afrik — Savoure, Note, Partage ✨</p>
+    <p class="text-xs opacity-50 mt-1">TP INF232 - EC2</p>
+  </footer>
+
+  <script>
+    const API_BASE = "https://VOTRE-BACKEND.up.railway.app";
+    let noteAvisSelectionnee = 0;
+    const labels = ["","Mauvais 😕","Passable 😐","Bien 🙂","Très bien 😄","Excellent 🤩"];
+
+    function changerOnglet(onglet) {
+      const isAvis = onglet === 'avis';
+      document.getElementById("formAvis").classList.toggle("hidden", !isAvis);
+      document.getElementById("formSuggestion").classList.toggle("hidden", isAvis);
+      document.getElementById("tabAvis").className = "tab-btn " + (isAvis ? "tab-active" : "tab-inactive");
+      document.getElementById("tabSuggestion").className = "tab-btn " + (!isAvis ? "tab-active" : "tab-inactive");
+    }
+
+    function setNoteAvis(n) {
+      noteAvisSelectionnee = n;
+      document.querySelectorAll("#noteStars .note-btn").forEach((btn, i) => {
+        btn.style.color = i < n ? "#f59e0b" : "#d1d5db";
+      });
+      document.getElementById("noteLabel").textContent = labels[n];
+    }
+
+    async function soumettreAvis() {
+      const nomPlat = document.getElementById("avisPlatNom").value.trim();
+      if (!nomPlat) { alert("Entrez le nom du plat."); return; }
+      if (!noteAvisSelectionnee) { alert("Sélectionnez une note."); return; }
+
+      try {
+        const resp = await fetch(`${API_BASE}/avis`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nom_plat: nomPlat,
+            pays: document.getElementById("avisPays").value,
+            note: noteAvisSelectionnee,
+            commentaire: document.getElementById("avisCommentaire").value,
+            auteur: document.getElementById("avisAuteur").value || "Anonyme",
+          }),
+        });
+        if (resp.ok) {
+          document.getElementById("avisSucces").classList.remove("hidden");
+          document.getElementById("avisPlatNom").value = "";
+          document.getElementById("avisCommentaire").value = "";
+          setNoteAvis(0);
+          setTimeout(() => document.getElementById("avisSucces").classList.add("hidden"), 5000);
+        } else throw new Error();
+      } catch { document.getElementById("avisErreur").classList.remove("hidden"); }
+    }
+
+    async function soumettreSuggestion() {
+      const sujet = document.getElementById("suggSujet").value;
+      const message = document.getElementById("suggMessage").value.trim();
+      if (!sujet) { alert("Choisissez un sujet."); return; }
+      if (message.length < 10) { alert("Message trop court."); return; }
+
+      try {
+        const resp = await fetch(`${API_BASE}/suggestion`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            nom: document.getElementById("suggNom").value,
+            email: document.getElementById("suggEmail").value,
+            sujet,
+            message,
+          }),
+        });
+        if (resp.ok) {
+          document.getElementById("suggSucces").classList.remove("hidden");
+          document.getElementById("suggMessage").value = "";
+          document.getElementById("suggSujet").value = "";
+          setTimeout(() => document.getElementById("suggSucces").classList.add("hidden"), 5000);
+        } else throw new Error();
+      } catch { document.getElementById("suggErreur").classList.remove("hidden"); }
+    }
+  </script>
+</body>
+</html>

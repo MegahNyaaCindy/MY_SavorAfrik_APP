@@ -1,0 +1,299 @@
+<!--cat > /mnt/user-data/outputs/index.html << 'HTMLEOF'--> 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="config.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!--<link rel="stylesheet" href="accuiel.css">--> 
+  <title>Savor'Afrik — Statistiques</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    .hover-lift:hover {
+        transform: translateY(-5px); transition: transform 0,2s;
+    }
+    @keyframes fadeInUp {
+        from{opacity: 0;transform: translateY(20px);}to{opacity: 1;transform: translateY(0);}
+    }
+    .fadein {
+        animation: fadeInUP 0.6s ease both;
+    }
+    .bg-savor-vert { background-color: #1a472a; }
+    .savor-vert { color: #1a472a; }
+    .text-savor-orange { color: #f4a261; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+    .fadein { animation: fadeInUp 0.5s ease both; }
+    .badge-update { background: #fef3c7; color: #92400e; border: 1px solid #fde68a; border-radius: 9999px; padding: 4px 14px; font-size: 12px; font-weight: 600; }
+  </style>
+</head>
+<body class="bg-savor-creme">
+    
+    <!-- Navigation -->
+    <nav class="bg-savor-vert text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    🍲 SavorAfrik ✨
+                </div>
+                <div class="space-x-6">
+                    <a href="index.html" class="hover:text-savor-orange transition">Accueil</a>
+                    <a href="avis.html" class="hover:text-savor-orange transition">Donner mon avis</a>
+                    <a href="stats.html" class="hover:text-savor-orange transition">statistiques</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+
+  <!-- Hero -->
+  <section class="bg-gradient-to-r from-savor-vert to-orange-400 text-savor-vert py-14 text-center px-4">
+    <h1 class="text-4xl font-bold mb-3">📊 Statistiques Culinaires</h1>
+    <p class="text-lg opacity-90 max-w-2xl mx-auto">
+      Résultats basés sur les appréciations de la communauté Savor'Afrik.<br>
+      <span class="font-semibold">Ces données sont mises à jour chaque semaine.</span>
+    </p>
+  </section>
+
+  <main class="max-w-5xl mx-auto px-4 py-10">
+
+    <!-- Bandeau info mise à jour -->
+    <div class="flex flex-wrap justify-between items-center mb-8 gap-3">
+      <div>
+        <h2 class="text-2xl font-bold savor-vert">Vue d'ensemble</h2>
+        <p class="text-gray-500 text-sm mt-1">Données issues des évaluations des utilisateurs</p>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="badge-update">🔄 Mise à jour hebdomadaire</span>
+        <span class="text-xs text-gray-400" id="dateMaj"></span>
+      </div>
+    </div>
+
+    <!-- KPI Cards -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10 fadein">
+      <div class="bg-white rounded-2xl shadow p-5 text-center">
+        <p class="text-3xl font-bold savor-vert" id="kpiPlats">—</p>
+        <p class="text-gray-500 text-sm mt-1">Plats évalués</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5 text-center">
+        <p class="text-3xl font-bold savor-vert" id="kpiAvis">—</p>
+        <p class="text-gray-500 text-sm mt-1">Avis reçus</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5 text-center">
+        <p class="text-3xl font-bold text-savor-orange" id="kpiNote">—</p>
+        <p class="text-gray-500 text-sm mt-1">Note moyenne</p>
+      </div>
+      <div class="bg-white rounded-2xl shadow p-5 text-center">
+        <p class="text-3xl font-bold savor-vert" id="kpiPays">6</p>
+        <p class="text-gray-500 text-sm mt-1">Pays représentés</p>
+      </div>
+    </div>
+
+    <!-- Graphique barres -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 mb-8 fadein" style="animation-delay:0.1s">
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h3 class="text-lg font-bold savor-vert">🏆 Plats les plus appréciés</h3>
+          <p class="text-gray-400 text-xs mt-1">Classés par note moyenne — appréciations des utilisateurs</p>
+        </div>
+        <span class="badge-update">Top 10</span>
+      </div>
+      <div style="position:relative; height:320px;">
+        <canvas id="chartBarres"></canvas>
+      </div>
+    </div>
+
+    <!-- Graphique camembert -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+      <div class="bg-white rounded-2xl shadow-lg p-6 fadein" style="animation-delay:0.2s">
+        <div class="mb-4">
+          <h3 class="text-lg font-bold savor-vert">🌍 Répartition par pays</h3>
+          <p class="text-gray-400 text-xs mt-1">Nombre de plats connus par pays — résultats des appréciations utilisateurs</p>
+        </div>
+        <div style="position:relative; height:280px;">
+          <canvas id="chartCamembert"></canvas>
+        </div>
+      </div>
+
+      <!-- Tableau top 5 -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 fadein" style="animation-delay:0.3s">
+        <h3 class="text-lg font-bold savor-vert mb-4">🥇 Podium des plats</h3>
+        <div id="podiumListe" class="space-y-3"></div>
+      </div>
+    </div>
+
+    <!-- Note de bas de page -->
+    <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 text-center fadein" style="animation-delay:0.4s">
+      <p class="text-amber-800 text-sm font-medium">
+        📅 Ces statistiques reflètent les appréciations de la communauté Savor'Afrik et sont actualisées chaque semaine.<br>
+        <span class="font-normal opacity-80">Donnez votre avis pour enrichir ces données !</span>
+      </p>
+      <a href="avis.html" class="inline-block mt-3 bg-savor-vert text-white px-6 py-2 rounded-xl text-sm font-semibold hover:opacity-90 transition">
+        ⭐ Donner mon avis
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-savor-vert text-white py-6 text-center mt-8">
+    <p>🍲 Savor'Afrik — Savoure, Note, Partage ✨</p>
+    <p class="text-xs opacity-50 mt-1">TP INF232 - EC2</p>
+  </footer>
+
+  <script>
+    const API_BASE = "https://VOTRE-BACKEND.up.railway.app";
+
+    const COULEURS_PAYS = {
+      "Cameroun": "#1a472a",
+      "Congo": "#f4a261",
+      "RD Congo": "#e76f51",
+      "Gabon": "#2a9d8f",
+      "RCA": "#e9c46a",
+      "Tchad": "#264653",
+      "Guinée Équatoriale": "#8ecae6",
+    };
+
+    const DONNEES_STATIQUES = {
+      plats: [
+        { nom_plat: "Poulet DG", note_moyenne: 4.9, nombre_avis: 128, pays: "Cameroun" },
+        { nom_plat: "Ndolé", note_moyenne: 4.8, nombre_avis: 115, pays: "Cameroun" },
+        { nom_plat: "Eru", note_moyenne: 4.7, nombre_avis: 98, pays: "Cameroun" },
+        { nom_plat: "Moamba Nsusu", note_moyenne: 4.6, nombre_avis: 74, pays: "Congo" },
+        { nom_plat: "Sanga", note_moyenne: 4.5, nombre_avis: 52, pays: "RCA" },
+        { nom_plat: "Daraba", note_moyenne: 4.4, nombre_avis: 43, pays: "Tchad" },
+        { nom_plat: "Mbanga Soup", note_moyenne: 4.3, nombre_avis: 38, pays: "Cameroun" },
+        { nom_plat: "Pondu", note_moyenne: 4.2, nombre_avis: 31, pays: "RD Congo" },
+        { nom_plat: "Nkembe", note_moyenne: 4.1, nombre_avis: 27, pays: "Gabon" },
+        { nom_plat: "Nyembwe", note_moyenne: 4.0, nombre_avis: 22, pays: "Guinée Équatoriale" },
+      ],
+      pays: [
+        { pays: "Cameroun", nombre_plats: 12, note_moyenne: 4.7 },
+        { pays: "Congo", nombre_plats: 7, note_moyenne: 4.4 },
+        { pays: "RD Congo", nombre_plats: 6, note_moyenne: 4.2 },
+        { pays: "Tchad", nombre_plats: 4, note_moyenne: 4.1 },
+        { pays: "Gabon", nombre_plats: 4, note_moyenne: 4.3 },
+        { pays: "RCA", nombre_plats: 3, note_moyenne: 4.0 },
+        { pays: "Guinée Équatoriale", nombre_plats: 2, note_moyenne: 3.9 },
+      ],
+    };
+
+    function construireKPIs(plats, pays) {
+      const totalAvis = plats.reduce((s, p) => s + p.nombre_avis, 0);
+      const noteMoy = (plats.reduce((s, p) => s + p.note_moyenne, 0) / plats.length).toFixed(1);
+      document.getElementById("kpiPlats").textContent = plats.length;
+      document.getElementById("kpiAvis").textContent = totalAvis;
+      document.getElementById("kpiNote").textContent = noteMoy + "/5";
+      document.getElementById("kpiPays").textContent = pays.length;
+    }
+
+    function construireBarres(plats) {
+      const ctx = document.getElementById("chartBarres").getContext("2d");
+      new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: plats.map(p => p.nom_plat),
+          datasets: [{
+            label: "Note moyenne",
+            data: plats.map(p => p.note_moyenne),
+            backgroundColor: plats.map(p => COULEURS_PAYS[p.pays] || "#1a472a"),
+            borderRadius: 8,
+            borderSkipped: false,
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: ctx => `Note: ${ctx.raw}/5 · ${plats[ctx.dataIndex].nombre_avis} avis · ${plats[ctx.dataIndex].pays}`,
+              },
+            },
+          },
+          scales: {
+            y: { min: 3, max: 5, grid: { color: "#f3f4f6" }, ticks: { font: { size: 12 } } },
+            x: { grid: { display: false }, ticks: { font: { size: 11 }, maxRotation: 30 } },
+          },
+        },
+      });
+    }
+
+    function construireCamembert(pays) {
+      const ctx = document.getElementById("chartCamembert").getContext("2d");
+      new Chart(ctx, {
+        type: "doughnut",
+        data: {
+          labels: pays.map(p => p.pays),
+          datasets: [{
+            data: pays.map(p => p.nombre_plats),
+            backgroundColor: pays.map(p => COULEURS_PAYS[p.pays] || "#888"),
+            borderWidth: 2,
+            borderColor: "#ffffff",
+          }],
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: "bottom", labels: { font: { size: 11 }, padding: 10 } },
+            tooltip: {
+              callbacks: {
+                label: ctx => `${ctx.label}: ${ctx.raw} plats (note moy. ${pays[ctx.dataIndex].note_moyenne}/5)`,
+              },
+            },
+          },
+        },
+      });
+    }
+
+    function construirePodium(plats) {
+      const medailles = ["🥇", "🥈", "🥉", "4️⃣", "5️⃣"];
+      const div = document.getElementById("podiumListe");
+      plats.slice(0, 5).forEach((p, i) => {
+        const etoiles = "★".repeat(Math.round(p.note_moyenne)) + "☆".repeat(5 - Math.round(p.note_moyenne));
+        div.innerHTML += `
+          <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-orange-50 transition cursor-pointer"
+               onclick="window.location.href='decouvrir.html?plat=${encodeURIComponent(p.nom_plat)}'">
+            <div class="flex items-center gap-3">
+              <span class="text-xl">${medailles[i]}</span>
+              <div>
+                <p class="font-semibold text-gray-800 text-sm">${p.nom_plat}</p>
+                <p class="text-xs text-gray-400">${p.pays} · ${p.nombre_avis} avis</p>
+              </div>
+            </div>
+            <div class="text-right">
+              <p class="font-bold savor-vert text-sm">${p.note_moyenne}/5</p>
+              <p class="text-xs text-yellow-500">${etoiles}</p>
+            </div>
+          </div>`;
+      });
+    }
+
+    async function chargerStats() {
+      document.getElementById("dateMaj").textContent =
+        "Semaine du " + new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" });
+
+      let plats = DONNEES_STATIQUES.plats;
+      let pays = DONNEES_STATIQUES.pays;
+
+      try {
+        const [rPlats, rPays] = await Promise.all([
+          fetch(`${API_BASE}/stats/plats`).then(r => r.json()),
+          fetch(`${API_BASE}/stats/pays`).then(r => r.json()),
+        ]);
+        if (rPlats.plats && rPlats.plats.length > 0) plats = rPlats.plats;
+        if (rPays.pays && rPays.pays.length > 0) pays = rPays.pays;
+      } catch { }
+
+      construireKPIs(plats, pays);
+      construireBarres(plats);
+      construireCamembert(pays);
+      construirePodium(plats);
+    }
+
+    chargerStats();
+  </script>
+</body>
+</html>

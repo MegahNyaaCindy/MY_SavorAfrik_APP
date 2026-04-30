@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: savorafrik-backend
+    runtime: python
+    region: frankfurt
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: UNSPLASH_ACCESS_KEY
+        value: ""   # ← optionnel, à remplir si vous avez une clé Unsplash

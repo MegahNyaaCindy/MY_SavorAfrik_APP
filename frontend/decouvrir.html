@@ -1,0 +1,341 @@
+<!-- cat > /mnt/user-data/outputs/decouvrir.html << 'HTMLEOF'--> 
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <script src="config.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- <link rel="stylesheet" href="accuiel.css">--> 
+  <title>Savor'Afrik — Découvrir</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .hover-lift:hover {
+        transform: translateY(-5px); transition: transform 0,2s;
+    }
+    @keyframes fadeInUp {
+        from{opacity: 0;transform: translateY(20px);}to{opacity: 1;transform: translateY(0);}
+    }
+    .fadein {
+        animation: fadeInUP 0.6s ease both;
+    }
+    :root { --vert: #1a472a; --orange: #f4a261; --creme: #f4f1ea; }
+    .savor-vert { color: #1a472a; }
+    .savor-orange {color: #f4a261; }
+    .bg-savor-vert { background-color: #1a472a; }
+    .bg-savor-orange { background-color: #f4a261; }
+    .text-savor-orange { color: #f4a261; }
+    .border-savor-orange { border-color: #f4a261; }
+    @keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .animate-fadein { animation: fadeInUp 0.6s ease both; }
+    .spinner { animation: spin 1s linear infinite; border: 3px solid #f4a261; border-top-color: transparent; border-radius: 50%; width: 48px; height: 48px; }
+    .etoile { color: #f59e0b; }
+    .etoile-vide { color: #d1d5db; }
+    .ingredient-tag { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; border-radius: 9999px; padding: 4px 12px; font-size: 13px; display: inline-block; margin: 3px; }
+    .etape-item { counter-increment: etapes; display: flex; gap: 12px; margin-bottom: 14px; }
+    .etape-num { background: #1a472a; color: white; border-radius: 50%; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: bold; flex-shrink: 0; margin-top: 2px; }
+    .note-btn { width: 40px; height: 40px; font-size: 22px; cursor: pointer; transition: transform 0.15s; }
+    .note-btn:hover { transform: scale(1.2); }
+    .pays-badge { background: #f4a261; color: #1a472a; padding: 4px 14px; border-radius: 9999px; font-weight: 700; font-size: 13px; }
+    </style>
+</head>
+<body class="bg-savor-creme">
+  <!-- Nav -->
+  <nav class="bg-savor-vert text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="text-2xl font-bold">
+                    🍲 SavorAfrik ✨
+                </div>
+                <div class="space-x-6">
+                     <a href="index.html" class="hover:text-savor-orange transition">Accueil</a>
+                     <a href="avis.html" class="hover:text-savor-orange transition">Donner mon avis</a>
+                     <a href="stats.html" class="hover:text-savor-orange transition">Statistiques</a>
+                </div>     
+            </div>
+        </div>    
+  </nav>
+
+  <!-- Barre de recherche rapide -->
+  <div class="bg-savor-vert py-6">
+    <div class="max-w-2xl mx-auto px-4">
+      <div class="flex gap-2">
+        <input type="text" id="rechercheInput" placeholder="🔍 Chercher un autre plat..."
+          class="flex-1 px-4 py-3 rounded-xl text-gray-800 outline-none focus:ring-2 focus:ring-orange-400 text-sm"
+          onkeypress="if(event.key==='Enter') rechercherDepuisPage()">
+        <button onclick="rechercherDepuisPage()"
+          class="bg-savor-orange text-white px-5 py-3 rounded-xl font-semibold hover:opacity-90 transition text-sm">
+          Découvrir
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Zone de chargement -->
+  <div id="loading" class="flex flex-col items-center justify-center py-24 gap-4">
+    <div class="spinner"></div>
+    <p class="text-gray-500 text-sm">Recherche du plat en cours...</p>
+  </div>
+
+  <!-- Zone erreur -->
+  <div id="erreur" class="hidden max-w-xl mx-auto mt-16 text-center px-4">
+    <div class="text-6xl mb-4">🍽️</div>
+    <h2 class="text-2xl font-bold text-gray-700 mb-2">Plat introuvable</h2>
+    <p class="text-gray-500 mb-6" id="erreurMsg">Nous n'avons pas trouvé ce plat dans notre base de données.</p>
+    <a href="index.html" class="bg-savor-vert text-white px-6 py-3 rounded-xl font-semibold hover:opacity-90 transition">
+      ← Retour à l'accueil
+    </a>
+  </div>
+
+  <!-- Contenu principal -->
+  <main id="contenu" class="hidden max-w-5xl mx-auto px-4 py-10">
+
+    <!-- Hero carte plat -->
+    <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-8 animate-fadein">
+      <div class="relative h-72 md:h-96 bg-gray-200">
+        <img id="platImage" src="" alt="" class="w-full h-full object-cover">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        <div class="absolute bottom-0 left-0 p-6 text-white">
+          <span class="pays-badge mb-3 inline-block" id="platPays">Cameroun</span>
+          <h1 class="text-3xl md:text-4xl font-bold" id="platNom">Nom du plat</h1>
+          <div class="flex items-center gap-3 mt-2">
+            <div id="etoilesMoyenne" class="flex gap-1"></div>
+            <span id="noteMoyenne" class="text-lg font-semibold text-savor-orange"></span>
+            <span id="nbAvis" class="text-sm text-gray-300"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="p-6 md:p-8">
+        <p id="platDescription" class="text-gray-600 text-base leading-relaxed"></p>
+      </div>
+    </div>
+
+    <!-- 2 colonnes : ingrédients + étapes -->
+    <div class="grid md:grid-cols-2 gap-6 mb-8">
+
+      <!-- Ingrédients -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 animate-fadein" style="animation-delay:0.1s">
+        <h2 class="text-xl font-bold savor-vert mb-4 flex items-center gap-2">
+          🛒 Ingrédients
+        </h2>
+        <div id="ingredientsList" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Étapes -->
+      <div class="bg-white rounded-2xl shadow-lg p-6 animate-fadein" style="animation-delay:0.2s">
+        <h2 class="text-xl font-bold savor-vert mb-4 flex items-center gap-2">
+          👨‍🍳 Préparation
+        </h2>
+        <ol id="etapesList"></ol>
+      </div>
+    </div>
+
+    <!-- Formulaire noter ce plat -->
+    <div class="bg-white rounded-2xl shadow-lg p-6 md:p-8 animate-fadein" style="animation-delay:0.3s">
+      <h2 class="text-xl font-bold savor-vert mb-2">⭐ Notez ce plat</h2>
+      <p class="text-gray-500 text-sm mb-5">Avez-vous goûté ce plat ? Partagez votre expérience !</p>
+
+      <div id="avisSucces" class="hidden bg-green-50 border border-green-200 rounded-xl p-4 text-green-700 font-medium mb-4">
+        🎉 Merci pour votre avis ! Il a bien été enregistré.
+      </div>
+
+      <div class="space-y-4">
+        <!-- Étoiles -->
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-2">Votre note</label>
+          <div class="flex gap-1" id="noteEtoiles">
+            <button class="note-btn" data-note="1" onclick="setNote(1)">☆</button>
+            <button class="note-btn" data-note="2" onclick="setNote(2)">☆</button>
+            <button class="note-btn" data-note="3" onclick="setNote(3)">☆</button>
+            <button class="note-btn" data-note="4" onclick="setNote(4)">☆</button>
+            <button class="note-btn" data-note="5" onclick="setNote(5)">☆</button>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-sm font-semibold text-gray-700 block mb-1">Votre prénom (optionnel)</label>
+            <input type="text" id="avisAuteur" placeholder="Anonyme"
+              class="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-400">
+          </div>
+          <div>
+            <label class="text-sm font-semibold text-gray-700 block mb-1">Pays du plat</label>
+            <select id="avisPays" class="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-400">
+              <option value="">Sélectionner...</option>
+              <option>Cameroun</option>
+              <option>Congo</option>
+              <option>RD Congo</option>
+              <option>Gabon</option>
+              <option>RCA</option>
+              <option>Tchad</option>
+              <option>Guinée Équatoriale</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-gray-700 block mb-1">Votre commentaire (optionnel)</label>
+          <textarea id="avisCommentaire" rows="3" placeholder="Décrivez votre expérience avec ce plat..."
+            class="w-full border border-gray-200 rounded-xl px-4 py-2 text-sm outline-none focus:border-orange-400 resize-none"></textarea>
+        </div>
+
+        <button onclick="soumettreAvis()"
+          class="bg-savor-vert text-white px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition w-full md:w-auto">
+          Envoyer mon avis 🚀
+        </button>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="fixed bottom-0 left-0 w-full bg-savor-vert text-white py-8 mt-16">
+        <div class="container mx-auto px-6 text-center">
+            <p>🍲 SavorAfrik — Savoure, Note, Partage ✨</p>
+            <p class="text-sm opacity-75 mt-2">Application de collecte et analyse de données culinaires d'Afrique Centrale</p>
+            <p class="text-sm opacity-50 mt-4">TP INF232 - EC2</p>
+        </div>
+    </footer>
+
+  <script>
+    {CONFIG.API_URL}
+    //const API_BASE = "https://VOTRE-BACKEND.up.railway.app";
+    let nomPlatActuel = "";
+    let noteSelectionnee = 0;
+
+    function getParamURL(cle) {
+      return new URLSearchParams(window.location.search).get(cle);
+    }
+
+    function etoilesHTML(note, max = 5) {
+      let html = "";
+      for (let i = 1; i <= max; i++) {
+        html += `<span class="${i <= note ? 'etoile' : 'etoile-vide'}">★</span>`;
+      }
+      return html;
+    }
+
+    function setNote(n) {
+      noteSelectionnee = n;
+      document.querySelectorAll("#noteEtoiles .note-btn").forEach((btn, idx) => {
+        btn.textContent = idx < n ? "★" : "☆";
+        btn.style.color = idx < n ? "#f59e0b" : "#9ca3af";
+      });
+    }
+
+    async function chargerPlat(nom) {
+      nomPlatActuel = nom;
+      document.getElementById("loading").classList.remove("hidden");
+      document.getElementById("contenu").classList.add("hidden");
+      document.getElementById("erreur").classList.add("hidden");
+
+      try {
+        const resp = await fetch(`${API_BASE}/plat/${encodeURIComponent(nom)}`);
+        if (!resp.ok) throw new Error("Plat non trouvé");
+        const data = await resp.json();
+        afficherPlat(data);
+      } catch (e) {
+        document.getElementById("loading").classList.add("hidden");
+        document.getElementById("erreur").classList.remove("hidden");
+        document.getElementById("erreurMsg").textContent = `Impossible de charger "${nom}". Vérifiez le nom et réessayez.`;
+      }
+    }
+
+    function afficherPlat(data) {
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("contenu").classList.remove("hidden");
+
+      document.getElementById("platNom").textContent = data.nom || nomPlatActuel;
+      document.getElementById("platPays").textContent = "📍 " + (data.pays_origine || "Afrique Centrale");
+      document.getElementById("platDescription").textContent = data.description || "";
+      document.title = `${data.nom} — Savor'Afrik`;
+
+      const img = document.getElementById("platImage");
+      img.src = data.image_url || "https://images.unsplash.com/photo-1567364816519-cbc9c4ffe1eb?w=800&q=80";
+      img.alt = data.nom;
+
+      const noteM = data.note_moyenne;
+      document.getElementById("etoilesMoyenne").innerHTML = noteM ? etoilesHTML(Math.round(noteM)) : "";
+      document.getElementById("noteMoyenne").textContent = noteM ? `${noteM}/5` : "Pas encore noté";
+      document.getElementById("nbAvis").textContent = data.nombre_avis > 0 ? `(${data.nombre_avis} avis)` : "";
+
+      const ingDiv = document.getElementById("ingredientsList");
+      ingDiv.innerHTML = "";
+      (data.ingredients || []).forEach(ing => {
+        if (ing && ing.trim()) {
+          const span = document.createElement("span");
+          span.className = "ingredient-tag";
+          span.textContent = ing;
+          ingDiv.appendChild(span);
+        }
+      });
+
+      const etapesOl = document.getElementById("etapesList");
+      etapesOl.innerHTML = "";
+      (data.etapes || []).forEach((etape, i) => {
+        if (etape && etape.trim()) {
+          etapesOl.innerHTML += `
+            <li class="etape-item">
+              <span class="etape-num">${i + 1}</span>
+              <span class="text-gray-700 text-sm leading-relaxed">${etape}</span>
+            </li>`;
+        }
+      });
+
+      const paysSelect = document.getElementById("avisPays");
+      const paysOptions = Array.from(paysSelect.options);
+      const match = paysOptions.find(o => o.value === data.pays_origine);
+      if (match) paysSelect.value = match.value;
+    }
+
+    async function soumettreAvis() {
+      if (noteSelectionnee === 0) {
+        alert("Veuillez sélectionner une note (1 à 5 étoiles) !");
+        return;
+      }
+      const body = {
+        nom_plat: nomPlatActuel,
+        pays: document.getElementById("avisPays").value,
+        note: noteSelectionnee,
+        commentaire: document.getElementById("avisCommentaire").value,
+        auteur: document.getElementById("avisAuteur").value || "Anonyme",
+      };
+      try {
+        const resp = await fetch(`${API_BASE}/avis`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+        if (resp.ok) {
+          document.getElementById("avisSucces").classList.remove("hidden");
+          setNote(0);
+          document.getElementById("avisCommentaire").value = "";
+          document.getElementById("avisAuteur").value = "";
+          setTimeout(() => document.getElementById("avisSucces").classList.add("hidden"), 4000);
+        }
+      } catch (e) {
+        alert("Erreur lors de l'envoi. Vérifiez votre connexion.");
+      }
+    }
+
+    function rechercherDepuisPage() {
+      const val = document.getElementById("rechercheInput").value.trim();
+      if (val.length < 2) return;
+      window.location.href = `decouvrir.html?plat=${encodeURIComponent(val)}`;
+    }
+
+    const nomPlat = getParamURL("plat");
+    if (nomPlat) {
+      chargerPlat(nomPlat);
+    } else {
+      document.getElementById("loading").classList.add("hidden");
+      document.getElementById("erreur").classList.remove("hidden");
+      document.getElementById("erreurMsg").textContent = "Aucun plat spécifié. Retournez à l'accueil pour faire une recherche.";
+    }
+  </script>
+</body>
+</html>
+<!--HTMLEOF
+echo "decouvrir.html créé"
