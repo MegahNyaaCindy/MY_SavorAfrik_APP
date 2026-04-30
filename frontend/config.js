@@ -3,7 +3,7 @@
 //  Détecte automatiquement si on est en local ou en production
 // ============================================================
 const LOCAL_API_URL = "http://127.0.0.1:8000";
-const PROD_API_URL  = "https://savorafrik-backend.onrender.com"; // ← à changer après déploiement
+const PROD_API_URL  = "https://my-savorafrik-app.onrender.com"; // ← à changer après déploiement
 
 const _hostname = window.location.hostname;
 const _isLocal  = _hostname === "localhost"
